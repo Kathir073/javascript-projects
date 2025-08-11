@@ -1,33 +1,30 @@
-import React, { useEffect, useLayoutEffect } from 'react';
-import { NavigationContainer, DefaultTheme, useNavigation } from '@react-navigation/native';
+import React, { useEffect } from 'react';
+import { NavigationContainer, DefaultTheme } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { Provider as PaperProvider, IconButton } from 'react-native-paper';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { Provider as PaperProvider } from 'react-native-paper';
 import NewsScreen from './screens/NewsScreen';
 import DirectoryScreen from './screens/DirectoryScreen';
 import JobsScreen from './screens/JobsScreen';
 import MarketplaceScreen from './screens/MarketplaceScreen';
 import TransportScreen from './screens/TransportScreen';
 import './i18n';
-import i18n from './i18n';
 import { requestUserPermissionAndToken } from './notifications';
-import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
+import PhoneAuth from './auth/PhoneAuth';
 
 const Tab = createBottomTabNavigator();
+const Stack = createNativeStackNavigator();
 
-function HeaderLangToggle() {
-  const nav = useNavigation();
-  useLayoutEffect(() => {
-    nav.setOptions?.({
-      headerRight: () => (
-        <IconButton
-          icon="translate"
-          onPress={() => i18n.changeLanguage(i18n.language === 'en' ? 'ta' : 'en')}
-          accessibilityLabel="Toggle language"
-        />
-      ),
-    });
-  }, [nav]);
-  return null;
+function Tabs() {
+  return (
+    <Tab.Navigator screenOptions={{ headerShown: true }}>
+      <Tab.Screen name="News" component={NewsScreen} />
+      <Tab.Screen name="Directory" component={DirectoryScreen} />
+      <Tab.Screen name="Jobs" component={JobsScreen} />
+      <Tab.Screen name="Marketplace" component={MarketplaceScreen} />
+      <Tab.Screen name="Transport" component={TransportScreen} />
+    </Tab.Navigator>
+  );
 }
 
 export default function App() {
@@ -38,29 +35,10 @@ export default function App() {
   return (
     <PaperProvider>
       <NavigationContainer theme={DefaultTheme}>
-        <Tab.Navigator
-          screenOptions={({ route }) => ({
-            headerShown: true,
-            tabBarIcon: ({ color, size }) => {
-              const map: Record<string, string> = {
-                News: 'newspaper-variant',
-                Directory: 'store-search',
-                Jobs: 'briefcase',
-                Marketplace: 'cart',
-                Transport: 'train-car',
-              };
-              const name = map[route.name] || 'dots-horizontal';
-              return <MaterialCommunityIcons name={name as any} size={size} color={color} />;
-            },
-          })}
-        >
-          <Tab.Screen name="News" component={NewsScreen} options={{ tabBarLabel: 'News' }} />
-          <Tab.Screen name="Directory" component={DirectoryScreen} />
-          <Tab.Screen name="Jobs" component={JobsScreen} />
-          <Tab.Screen name="Marketplace" component={MarketplaceScreen} />
-          <Tab.Screen name="Transport" component={TransportScreen} />
-        </Tab.Navigator>
-        <HeaderLangToggle />
+        <Stack.Navigator initialRouteName="Tabs" screenOptions={{ headerShown: false }}>
+          <Stack.Screen name="Login" component={PhoneAuth} />
+          <Stack.Screen name="Tabs" component={Tabs} />
+        </Stack.Navigator>
       </NavigationContainer>
     </PaperProvider>
   );
