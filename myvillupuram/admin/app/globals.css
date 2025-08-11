@@ -1,0 +1,7 @@
+* { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; font-family: system-ui, Arial, sans-serif; }
+.container { max-width: 1024px; margin: 0 auto; padding: 1rem; }
+nav { display: flex; gap: 1rem; margin-bottom: 1rem; }
+input, textarea, select { padding: 0.5rem; width: 100%; }
+button { padding: 0.6rem 1rem; cursor: pointer; }
+.card { border: 1px solid #e5e7eb; border-radius: 8px; padding: 1rem; margin-bottom: 1rem; }
